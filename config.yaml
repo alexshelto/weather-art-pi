@@ -1,0 +1,10 @@
+
+art_parameters:
+  foo: "bar"
+
+
+
+weather:
+  zip_code: "45140"
+  api_code: ""
+
