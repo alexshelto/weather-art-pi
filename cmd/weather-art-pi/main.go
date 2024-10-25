@@ -1,11 +1,11 @@
 package main
 
 import (
-    "flag"
-    "fmt"
-    "log"
+	"flag"
+	"fmt"
+	"log"
 
-    "github.com/alexshelto/weather-art-pi/internal/config"
+	"github.com/alexshelto/weather-art-pi/internal/config"
 )
 
 func main() {
@@ -23,12 +23,8 @@ func main() {
 	if *mockTemp != -999 {
 		fmt.Printf("Using mock temperature: %.2f°F\n", *mockTemp)
 	} else {
-        fmt.Println("Not using mock temperature")
-    }
+		fmt.Println("Not using mock temperature")
+	}
 
-    fmt.Println(weatherApiConfig)
+	fmt.Println(weatherApiConfig)
 }
-
-
-
-
