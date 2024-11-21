@@ -31,29 +31,34 @@ func (wr WeatherResponse) GetRain() float64 {
 	return wr.Rain.OneHour
 }
 
+func (wr WeatherResponse) String() string {
+    return fmt.Sprintf("Temperature: %.2f°F\nWind Speed: %.2f mph\nRain (last hour): %.2f mm",
+    wr.Main.Temp, wr.Wind.Speed, wr.Rain.OneHour)
+}
+
 // GetWeather makes an API call to fetch the essential weather data
-func GetWeather(weatherConfig config.WeatherApiConfig) (*WeatherResponse, error) {
+func GetWeather(weatherConfig config.WeatherApiConfig) (WeatherResponse, error) {
 	url := fmt.Sprintf(
-		"https://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&appid=%s&units=metric",
+		"https://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&appid=%s&units=%s",
 		weatherConfig.Lat,
 		weatherConfig.Long,
 		weatherConfig.ApiKey,
+        weatherConfig.Units,
 	)
 
 	resp, err := http.Get(url)
 	if err != nil {
-		return nil, err
+		return WeatherResponse{}, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("failed to fetch weather data: %s", resp.Status)
+		return WeatherResponse{}, fmt.Errorf("failed to fetch weather data: %s", resp.Status)
 	}
 
 	var weatherResponse WeatherResponse
 	if err := json.NewDecoder(resp.Body).Decode(&weatherResponse); err != nil {
-		return nil, err
+		return WeatherResponse{}, err
 	}
-
-	return &weatherResponse, nil
+	return weatherResponse, nil
 }
