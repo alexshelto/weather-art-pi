@@ -1,5 +1,6 @@
 from enum import Enum
 import random
+import math
 import time
 from turtle import *
 
@@ -10,6 +11,8 @@ SLEEP_TIME = 90
 
 TILE_MIN_LEVEL = 3
 TILE_MAX_LEVEL = 6
+
+colors = ['#B1FF00','#642dd2', 'green', 'yellow', '#C73838']
 
 setup(W, H)
 
@@ -61,27 +64,75 @@ def tiling(x, y, w, h, l, mode=TileMode.STRAIGHT):
 
 
 def drawTiling(mode): 
-        clear()
+    new_color = random.choice(colors)
+    color(new_color)
 
-        tiling(0, 0, W, H, random.randint(TILE_MIN_LEVEL, TILE_MAX_LEVEL), mode)
-        time.sleep(SLEEP_TIME)
+    recursion_level = random.randint(TILE_MIN_LEVEL, TILE_MAX_LEVEL)
+    if recursion_level > 4: 
+        speed(2)
+    else: 
+        speed(1)
+        delay(20)
 
-        clear()
+    tiling(0, 0, W, H, recursion_level, mode)
+    time.sleep(SLEEP_TIME)
 
 
+def draw_recursive_shape(sides):
+    lens = {3: 200, 4: 170, 5: 130, 6: 110}
+    speed(2)
+    delay(0)
 
+    new_color = random.choice(colors)
+    color(new_color)
 
+    rotation_angle = random.randint(5, 180)
+
+    side_len = lens[sides]
+
+    shape_draw(side_len, 100, sides, rotation_angle)
+
+    time.sleep(SLEEP_TIME)
+
+def shape_draw(len, count, sides, rotation_angle):
+    turn_angle = 360 / sides
+
+    for _ in range(count): 
+        right(rotation_angle)
+        for _ in range(sides):
+            forward(len)
+            right(turn_angle)
+
+    
 def draw_loop():
     while True: 
-        drawTiling(TileMode.STRAIGHT)
-        drawTiling(TileMode.DIAGONAL)
+        clear()
+
+        choice = random.randint(0,1)
+
+        if choice == 0:
+            straight_or_diag = random.randint(0,1)
+            if straight_or_diag == 0: 
+                drawTiling(TileMode.STRAIGHT)
+            else:
+                drawTiling(TileMode.DIAGONAL)
+
+        elif choice == 1: 
+            num_sides = random.randint(3,6)
+            draw_recursive_shape(num_sides)
         
+        else:
+            exit('not here yet')
+
+        time.sleep(SLEEP_TIME)
+
+
+
 
 # Set turtle properties
+random.seed()
 hideturtle()
-
-speed(1)
-delay(20)
+bgcolor('black')
 
 draw_loop()
 
