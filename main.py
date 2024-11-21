@@ -6,7 +6,10 @@ from turtle import *
 # Screen dimensions
 W = 800
 H = 480
-SLEEP_TIME = 1
+SLEEP_TIME = 90
+
+TILE_MIN_LEVEL = 3
+TILE_MAX_LEVEL = 6
 
 setup(W, H)
 
@@ -57,20 +60,31 @@ def tiling(x, y, w, h, l, mode=TileMode.STRAIGHT):
         tiling(x + w / 2, y - h / 2, w, h, l, mode)
 
 
-def restart_drawing(): 
-    while True: 
-        levels = random.randint(2,4)
-        tiling(0, 0, W, H, levels, mode=TileMode.STRAIGHT)
+def drawTiling(mode): 
+        clear()
+
+        tiling(0, 0, W, H, random.randint(TILE_MIN_LEVEL, TILE_MAX_LEVEL), mode)
         time.sleep(SLEEP_TIME)
 
         clear()
 
 
+
+
+def draw_loop():
+    while True: 
+        drawTiling(TileMode.STRAIGHT)
+        drawTiling(TileMode.DIAGONAL)
+        
+
 # Set turtle properties
 hideturtle()
 
 speed(1)
-#restart_drawing()
-# Exit on click
+delay(20)
+
+draw_loop()
+
+
 exitonclick()
 
