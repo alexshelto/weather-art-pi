@@ -1,14 +1,22 @@
+from turtle import *
 from enum import Enum
 import random
-import time
-from turtle import *
+import math
 
 # Screen dimensions
 W = 800
 H = 480
-SLEEP_TIME = 1
 
 setup(W, H)
+
+# Calculate tile size using the GCD of W and H
+def calculate_tile_size(w, h, recursion_levels):
+    gcd = math.gcd(w, h)
+    return gcd / (2 ** recursion_levels)
+
+# Determine initial tile size based on recursion depth
+RECURSION_LEVELS = 3
+TILE_SIZE = calculate_tile_size(W, H, RECURSION_LEVELS)
 
 class TileMode(Enum):
     STRAIGHT = 'straight'
@@ -21,15 +29,15 @@ def tiling(x, y, w, h, l, mode=TileMode.STRAIGHT):
 
         if mode == TileMode.STRAIGHT: 
             if random.random() < 0.5: 
-                # Vertical Line (spans full tile height)
+                # Vertical Line
+                goto(x + w / 2, y)
+                pendown()
+                goto(x - w / 2, y)
+            else:
+                # Horizontal Line
                 goto(x, y + h / 2)
                 pendown()
                 goto(x, y - h / 2)
-            else:
-                # Horizontal Line (spans full tile width)
-                goto(x - w / 2, y)
-                pendown()
-                goto(x + w / 2, y)
 
         elif mode == TileMode.DIAGONAL: 
             if random.random() < 0.5: 
@@ -50,27 +58,19 @@ def tiling(x, y, w, h, l, mode=TileMode.STRAIGHT):
         h /= 2
         l -= 1
 
-        # Recursively tile each quadrant
-        tiling(x - w / 2, y + h / 2, w, h, l, mode)
-        tiling(x + w / 2, y + h / 2, w, h, l, mode)
-        tiling(x - w / 2, y - h / 2, w, h, l, mode)
-        tiling(x + w / 2, y - h / 2, w, h, l, mode)
-
-
-def restart_drawing(): 
-    while True: 
-        levels = random.randint(2,4)
-        tiling(0, 0, W, H, levels, mode=TileMode.STRAIGHT)
-        time.sleep(SLEEP_TIME)
-
-        clear()
+        tiling(x - w, y + h, w, h, l, mode)
+        tiling(x + w, y + h, w, h, l, mode)
+        tiling(x - w, y - h, w, h, l, mode)
+        tiling(x + w, y - h, w, h, l, mode)
 
 
 # Set turtle properties
 hideturtle()
+tracer(False)  # Disable animation for faster drawing
 
-speed(1)
-#restart_drawing()
+# Start tiling
+tiling(0, 0, W, H, RECURSION_LEVELS, mode=TileMode.STRAIGHT)
+
 # Exit on click
 exitonclick()
 
